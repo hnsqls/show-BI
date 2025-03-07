@@ -21,7 +21,7 @@ import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
-import { getLoginUserUsingGet, userLoginUsingPost } from '@/services/shuo-bi/userController';
+import { getLoginUserUsingGet, userLoginUsingPost, userRegisterUsingPost } from '@/services/shuo-bi/userController';
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -97,16 +97,16 @@ const Login: React.FC = () => {
       });
     }
   };
-  const handleSubmit = async (values: API.UserLoginRequest) => {
+  const handleSubmit = async (values: API.UserRegisterRequest) => {
     try {
-      // 登录
-      const res = await userLoginUsingPost(values);
+      // 注册
+      const res = await userRegisterUsingPost(values);
       if (res.code === 0) {
-        const defaultLoginSuccessMessage = '登录成功！';
+        const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        history.push(urlParams.get('redirect') || '/user/login');
         return;
       }
       else{
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
       }
   
     } catch (error) {
-      const defaultLoginFailureMessage = '登录失败，请重试！';
+      const defaultLoginFailureMessage = '注册失败，请重试！';
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <Helmet>
         <title>
-          {'登录'}- {Settings.title}
+          {'注册'}- {Settings.title}
         </title>
       </Helmet>
       <div
@@ -134,6 +134,11 @@ const Login: React.FC = () => {
         }}
       >
         <LoginForm
+         submitter={{
+          searchConfig: {
+            submitText: '注册', // 将按钮文本改为“注册”
+          },
+        }}
           contentStyle={{
             minWidth: 280,
             maxWidth: '75vw',
@@ -156,7 +161,7 @@ const Login: React.FC = () => {
             items={[
               {
                 key: 'account',
-                label: '账户密码登录',
+                label: '账户密码注册',
               },
             ]}
           />
@@ -194,6 +199,20 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
+               <ProFormText.Password
+                name="checkPassword"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined />,
+                }}
+                placeholder={'请再次输入密码 '}
+                rules={[
+                  {
+                    required: true,
+                    message: '密码是必填项！',
+                  },
+                ]}
+              />
             </>
           )}
 
@@ -207,12 +226,12 @@ const Login: React.FC = () => {
           >
           
             <a
-            href='/user/register'
+            href='/user/login'
               style={{
                 float: 'right',
               }}
             >
-              去注册 
+              去登录
             </a>
           </div>
         </LoginForm>
