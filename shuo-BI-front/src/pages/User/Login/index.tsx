@@ -181,7 +181,7 @@ const Login: React.FC = () => {
                 ]}
               />
               <ProFormText.Password
-                name="userPassword"
+                name="password"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined />,

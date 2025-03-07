@@ -14,10 +14,8 @@ const loginPath = '/user/login';
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
-  settings?: Partial<LayoutSettings>;
+
   currentUser?: API.CurrentUser;
-  loading?: boolean;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -132,5 +130,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  */
 export const request = {
   baseURL: 'http://localhost:8102',
+  withCredentials:true,
   ...errorConfig,
 };
