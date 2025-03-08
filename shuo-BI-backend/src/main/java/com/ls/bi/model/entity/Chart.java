@@ -22,6 +22,11 @@ public class Chart implements Serializable {
     private Long id;
 
     /**
+     * 图表名称
+     */
+    private String chartName;
+
+    /**
      * 分析目标
      */
     private String goal;
@@ -37,12 +42,12 @@ public class Chart implements Serializable {
     private String chartType;
 
     /**
-     * 生成的图表数据
+     * AI生成的图表数据
      */
     private String genChart;
 
     /**
-     * 生成的分析结论
+     * AI生成的分析结论
      */
     private String genResult;
 

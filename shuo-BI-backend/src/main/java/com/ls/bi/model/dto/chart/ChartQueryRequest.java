@@ -14,6 +14,10 @@ public class ChartQueryRequest implements Serializable {
      * id
      */
     private Long id;
+    /**
+     * 图表名称
+     */
+    private String chartName;
 
     /**
      * 分析目标

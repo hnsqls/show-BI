@@ -1,19 +1,15 @@
 package com.ls.bi.model.dto.chart;
 
+import java.io.Serializable;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
- * 修改
+ * 文件上传请求
+
  */
 @Data
-public class ChartUpdateRequest implements Serializable {
+public class ChartGenRequest implements Serializable {
 
-    /**
-     * id
-     */
-    private Long id;
 
     /**
      * 图表名称
@@ -25,10 +21,6 @@ public class ChartUpdateRequest implements Serializable {
      */
     private String goal;
 
-    /**
-     * 图表数据
-     */
-    private String chartData;
 
     /**
      * 图表类型
@@ -37,5 +29,4 @@ public class ChartUpdateRequest implements Serializable {
 
 
     private static final long serialVersionUID = 1L;
-
 }
