@@ -5,6 +5,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+application-local.yaml
 ### STS ###
 .apt_generated
 .classpath

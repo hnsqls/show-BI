@@ -98,3 +98,8 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.ls.bi.controller
+
+
+# ai
+ai:
+  apiKey: xxxxx

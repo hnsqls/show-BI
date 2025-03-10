@@ -162,10 +162,19 @@ public class ChartController {
         ThrowUtils.throwIf(StringUtils.isAnyBlank(chartName, goal, chartType), ErrorCode.PARAMS_ERROR);
 
         Long userId = userService.getLoginUser(request).getId();
-        //读取文件
+        //读取文件 excel ->csv
+        String csv = ExcelUtils.excelToCsv(multipartFile);
 
-        String string = ExcelUtils.excelToCsv(multipartFile);
-        return ResultUtils.success(string);
+        //系统prompt
+        String systemPrompt = "你是一个数据分析师，我会给你一些数据，请根据我的要求生成的特定的图表，并且给出总结，不要回复其他任何无关的信息";
+        // 用户prompt
+        String userPrompt = "根据以下数据，生成一个%s类型的图表,目标为%s";
+        String userPromptFormat = String.format(userPrompt, chartType, goal);
+
+        //调用接口
+
+
+        return ResultUtils.success(systemPrompt + userPromptFormat + csv);
 //        // 文件目录：根据业务、用户来划分
 //        String uuid = RandomStringUtils.randomAlphanumeric(8);
 //        String filename = uuid + "-" + multipartFile.getOriginalFilename();
