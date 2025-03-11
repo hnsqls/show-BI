@@ -29,7 +29,7 @@ const ChartForm: React.FC = () => {
     const params: API.genChartByAiUsingPOSTParams = {
       goal: values.analysisTarget, // 分析目标
       chartType: values.chartType, // 图表类型
-      chartName: '默认图表名称', // 如果需要，可以从表单中获取
+      chartName: values.chartName, // 如果需要，可以从表单中获取
     };
 
     // 获取文件
@@ -66,6 +66,13 @@ const ChartForm: React.FC = () => {
           label="分析目标"
           placeholder="请输入分析目标"
           rules={[{ required: true, message: '分析目标不能为空！' }]}
+        />
+         {/* 图表名称 */}
+         <ProFormText
+          name="chartName"
+          label="图表名称"
+          placeholder="请输入生成图表的名称"
+          rules={[{ required: true, message: '图表名称不能为空！' }]}
         />
 
         {/* 图表类型下拉框 */}

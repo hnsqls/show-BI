@@ -216,6 +216,7 @@ public class ChartController {
         chart.setGenResult(genResult);
         chart.setUserId(userId);
 
+        chart.setChartData(csv);
         chartService.save(chart);
 
 
