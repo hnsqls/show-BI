@@ -44,6 +44,13 @@ const useStyles = createStyles(({ token }) => ({
     borderRadius: token.borderRadiusLG,
     boxShadow: token.boxShadow,
     padding: '16px',
+    overflow: 'auto', // 允许内容滚动
+  },
+  analysisText: {
+    whiteSpace: 'pre-wrap', // 保留空白符，允许换行
+    wordWrap: 'break-word', // 长单词换行
+    fontFamily: 'monospace', // 使用等宽字体
+    lineHeight: 1.6, // 增加行高
   },
 }));
 
@@ -77,7 +84,7 @@ const ChartForm: React.FC = () => {
         setChartData(response);
 
         // 重点：打印 genChart 的内容
-  console.log('genChart 数据:', response.data?.genChart);
+        console.log('genChart 数据:', response.data?.genChart);
 
         // 在这里可以使用 response.data 进行进一步处理
         if (response.data) {
@@ -99,13 +106,14 @@ const ChartForm: React.FC = () => {
       const formattedString = chartData.data.genChart
         .replace(/(\w+)\s*:/g, '"$1":') // 给 key 添加双引号
         .replace(/'([^']+)'/g, '"$1"'); // 替换单引号为双引号
-  
+
       chartOption = JSON.parse(formattedString);
     }
   } catch (error) {
-    console.error("解析 genChart 失败:", error);
-    message.error("图表数据解析失败，请检查返回格式！");
+    console.error('解析 genChart 失败:', error);
+    message.error('图表数据解析失败，请检查返回格式！');
   }
+
   return (
     <div className={styles.container}>
       {/* 表单部分 */}
@@ -115,6 +123,13 @@ const ChartForm: React.FC = () => {
           initialValues={{
             chartType: 'pie', // 默认图表类型
           }}
+          submitter={{
+            searchConfig: {
+              submitText: 'AI分析', // 修改提交按钮的文本
+        
+            }
+          }}
+
         >
           {/* 分析目标输入框 */}
           <ProFormText
@@ -174,7 +189,9 @@ const ChartForm: React.FC = () => {
         {/* AI 分析结果 */}
         <div className={styles.analysisResult}>
           <h3>AI 分析结果</h3>
-          <pre>{chartData?.data?.genResult}</pre>
+          <div className={styles.analysisText}>
+            {chartData?.data?.genResult}
+          </div>
         </div>
       </div>
     </div>
