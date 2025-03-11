@@ -35,6 +35,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseString_ = {
+    code?: number;
+    data?: string;
+    message?: string;
+  };
+
   type BaseResponseUser_ = {
     code?: number;
     data?: User;
@@ -49,6 +55,7 @@ declare namespace API {
 
   type Chart = {
     chartData?: string;
+    chartName?: string;
     chartType?: string;
     createTime?: string;
     genChart?: string;
@@ -62,12 +69,14 @@ declare namespace API {
 
   type ChartAddRequest = {
     chartData?: string;
+    chartName?: string;
     chartType?: string;
     goal?: string;
   };
 
   type ChartUpdateRequest = {
     chartData?: string;
+    chartName?: string;
     chartType?: string;
     goal?: string;
     id?: number;
@@ -75,6 +84,12 @@ declare namespace API {
 
   type DeleteRequest = {
     id?: number;
+  };
+
+  type genChartByAiUsingPOSTParams = {
+    chartName?: string;
+    chartType?: string;
+    goal?: string;
   };
 
   type getChartByIdUsingGETParams = {
