@@ -156,7 +156,7 @@ public class ChartController {
      * @return
      */
     @PostMapping("/gen")
-    public BaseResponse<String> genChartByAi(@RequestPart("file") MultipartFile multipartFile,
+    public BaseResponse<Chart> genChartByAi(@RequestPart("file") MultipartFile multipartFile,
                                              ChartGenRequest chartGenRequest, HttpServletRequest request) {
 
         String chartName = chartGenRequest.getChartName();
@@ -223,7 +223,7 @@ public class ChartController {
         //调用接口
 
 
-        return ResultUtils.success(string);
+        return ResultUtils.success(chart);
     }
 
 }

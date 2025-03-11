@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ProForm, ProFormText, ProFormSelect, ProFormUploadButton } from '@ant-design/pro-components';
 import { message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { createStyles } from 'antd-style';
 import { genChartByAiUsingPost } from '@/services/shuo-bi/chartController';
-
 
 // 使用 createStyles 定义样式
 const useStyles = createStyles(({ token }) => ({
@@ -20,6 +19,7 @@ const useStyles = createStyles(({ token }) => ({
 
 const ChartForm: React.FC = () => {
   const { styles } = useStyles();
+  const [chartData, setChartData] = useState<API.BaseResponseChart_ | undefined>(undefined); // 用于存储返回的 data
 
   // 表单提交处理函数
   const handleSubmit = async (values: any) => {
@@ -29,7 +29,7 @@ const ChartForm: React.FC = () => {
     const params: API.genChartByAiUsingPOSTParams = {
       goal: values.analysisTarget, // 分析目标
       chartType: values.chartType, // 图表类型
-      chartName: values.chartName, // 如果需要，可以从表单中获取
+      chartName: values.chartName, // 图表名称
     };
 
     // 获取文件
@@ -43,6 +43,15 @@ const ChartForm: React.FC = () => {
       if (response.code === 0) {
         message.success('分析成功！');
         console.log('服务器响应:', response.data);
+
+        // 提取 data 部分并存储到状态中
+        setChartData(response);
+
+        // 在这里可以使用 response.data 进行进一步处理
+        if (response.data) {
+          // 例如：将 data 显示在页面上或传递给其他组件
+          console.log('提取的 data:', response.data);
+        }
       } else {
         message.error(`分析失败：${response.message}`);
       }
@@ -67,8 +76,9 @@ const ChartForm: React.FC = () => {
           placeholder="请输入分析目标"
           rules={[{ required: true, message: '分析目标不能为空！' }]}
         />
-         {/* 图表名称 */}
-         <ProFormText
+
+        {/* 图表名称 */}
+        <ProFormText
           name="chartName"
           label="图表名称"
           placeholder="请输入生成图表的名称"
@@ -101,6 +111,15 @@ const ChartForm: React.FC = () => {
           }}
         />
       </ProForm>
+
+      {/* 显示返回的 data */}
+      <div>
+        AI生成图表:{chartData?.data?.genChart}
+      </div>
+      <div>
+        AI分析结果:{chartData?.data?.genResult}
+      </div>
+      
     </div>
   );
 };

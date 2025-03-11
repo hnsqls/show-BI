@@ -35,12 +35,6 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponseString_ = {
-    code?: number;
-    data?: string;
-    message?: string;
-  };
-
   type BaseResponseUser_ = {
     code?: number;
     data?: User;
