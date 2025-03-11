@@ -7,13 +7,37 @@ import { genChartByAiUsingPost } from '@/services/shuo-bi/chartController';
 
 // 使用 createStyles 定义样式
 const useStyles = createStyles(({ token }) => ({
+  container: {
+    display: 'flex',
+    height: '100vh',
+  },
   formContainer: {
-    width: '50%', // 限制表单宽度为屏幕的一半
-    float: 'left', // 靠左对齐
-    padding: '24px', // 添加内边距
-    backgroundColor: token.colorBgContainer, // 使用主题背景色
-    borderRadius: token.borderRadiusLG, // 添加圆角
-    boxShadow: token.boxShadow, // 添加阴影
+    width: '50%', // 表单占左边一半
+    padding: '24px',
+    backgroundColor: token.colorBgContainer,
+    borderRadius: token.borderRadiusLG,
+    boxShadow: token.boxShadow,
+  },
+  resultContainer: {
+    width: '50%', // 结果占右边一半
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '24px',
+  },
+  chartResult: {
+    flex: 1, // 图表结果占一半高度
+    backgroundColor: token.colorBgContainer,
+    borderRadius: token.borderRadiusLG,
+    boxShadow: token.boxShadow,
+    padding: '16px',
+    marginBottom: '16px', // 与下方分析结果间隔
+  },
+  analysisResult: {
+    flex: 1, // 分析结果占一半高度
+    backgroundColor: token.colorBgContainer,
+    borderRadius: token.borderRadiusLG,
+    boxShadow: token.boxShadow,
+    padding: '16px',
   },
 }));
 
@@ -49,7 +73,6 @@ const ChartForm: React.FC = () => {
 
         // 在这里可以使用 response.data 进行进一步处理
         if (response.data) {
-          // 例如：将 data 显示在页面上或传递给其他组件
           console.log('提取的 data:', response.data);
         }
       } else {
@@ -62,64 +85,73 @@ const ChartForm: React.FC = () => {
   };
 
   return (
-    <div className={styles.formContainer}>
-      <ProForm
-        onFinish={handleSubmit}
-        initialValues={{
-          chartType: 'pie', // 默认图表类型
-        }}
-      >
-        {/* 分析目标输入框 */}
-        <ProFormText
-          name="analysisTarget"
-          label="分析目标"
-          placeholder="请输入分析目标"
-          rules={[{ required: true, message: '分析目标不能为空！' }]}
-        />
-
-        {/* 图表名称 */}
-        <ProFormText
-          name="chartName"
-          label="图表名称"
-          placeholder="请输入生成图表的名称"
-          rules={[{ required: true, message: '图表名称不能为空！' }]}
-        />
-
-        {/* 图表类型下拉框 */}
-        <ProFormSelect
-          name="chartType"
-          label="图表类型"
-          placeholder="请选择图表类型"
-          options={[
-            { label: '饼图', value: 'pie' },
-            { label: '柱状图', value: 'bar' },
-            { label: '折线图', value: 'line' },
-            { label: '散点图', value: 'scatter' },
-          ]}
-          rules={[{ required: true, message: '请选择图表类型！' }]}
-        />
-
-        {/* 文件上传 */}
-        <ProFormUploadButton
-          name="file"
-          label="上传文件"
-          max={1} // 最多上传 1 个文件
-          icon={<UploadOutlined />}
-          rules={[{ required: true, message: '请上传文件！' }]}
-          fieldProps={{
-            beforeUpload: () => false, // 阻止默认上传行为
+    <div className={styles.container}>
+      {/* 表单部分 */}
+      <div className={styles.formContainer}>
+        <ProForm
+          onFinish={handleSubmit}
+          initialValues={{
+            chartType: 'pie', // 默认图表类型
           }}
-        />
-      </ProForm>
+        >
+          {/* 分析目标输入框 */}
+          <ProFormText
+            name="analysisTarget"
+            label="分析目标"
+            placeholder="请输入分析目标"
+            rules={[{ required: true, message: '分析目标不能为空！' }]}
+          />
 
-      {/* 显示返回的 data */}
-      <div>
-        AI生成图表:{chartData?.data?.genChart}
+          {/* 图表名称 */}
+          <ProFormText
+            name="chartName"
+            label="图表名称"
+            placeholder="请输入生成图表的名称"
+            rules={[{ required: true, message: '图表名称不能为空！' }]}
+          />
+
+          {/* 图表类型下拉框 */}
+          <ProFormSelect
+            name="chartType"
+            label="图表类型"
+            placeholder="请选择图表类型"
+            options={[
+              { label: '饼图', value: 'pie' },
+              { label: '柱状图', value: 'bar' },
+              { label: '折线图', value: 'line' },
+              { label: '散点图', value: 'scatter' },
+            ]}
+            rules={[{ required: true, message: '请选择图表类型！' }]}
+          />
+
+          {/* 文件上传 */}
+          <ProFormUploadButton
+            name="file"
+            label="上传文件"
+            max={1} // 最多上传 1 个文件
+            icon={<UploadOutlined />}
+            rules={[{ required: true, message: '请上传文件！' }]}
+            fieldProps={{
+              beforeUpload: () => false, // 阻止默认上传行为
+            }}
+          />
+        </ProForm>
       </div>
-      <div>
-        AI分析结果:{chartData?.data?.genResult}
+
+      {/* 结果部分 */}
+      <div className={styles.resultContainer}>
+        {/* AI 生成图表 */}
+        <div className={styles.chartResult}>
+          <h3>AI 生成图表</h3>
+          <pre>{chartData?.data?.genChart}</pre>
+        </div>
+
+        {/* AI 分析结果 */}
+        <div className={styles.analysisResult}>
+          <h3>AI 分析结果</h3>
+          <pre>{chartData?.data?.genResult}</pre>
+        </div>
       </div>
-      
     </div>
   );
 };
