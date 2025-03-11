@@ -172,28 +172,28 @@ public class ChartController {
 
         //系统prompt
 //        String systemPrompt = "你是一个数据分析师，我会给你一些数据，请根据我的要求生成的特定的图表，并且给出总结，不要回复其他任何无关的信息";
-        String systemPrompt = "你是数据分析师，我会给你{csv数据}，以及{分析的要求}，请你生成{图形类型}的分析图的代码（我要使用ECharts 来展示图片）\n" +
-                "例如生成的图表数据\n" +
-                "```js\n" +
-                "option = {\n" +
-                "  xAxis: {\n" +
-                "    type: 'category',\n" +
-                "    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']\n" +
+        String systemPrompt = "你是数据分析师，我会给你{csv数据}，以及{分析的要求}，请你生成{图形类型}ECharts的配置对象的json代码\n" +
+                "例如生成的图表数据\n" +"{\n" +
+                "```\n" +
+                "  \"xAxis\": {\n" +
+                "    \"type\": \"category\",\n" +
+                "    \"data\": [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]\n" +
                 "  },\n" +
-                "  yAxis: {\n" +
-                "    type: 'value'\n" +
+                "  \"yAxis\": {\n" +
+                "    \"type\": \"value\"\n" +
                 "  },\n" +
-                "  series: [\n" +
+                "  \"series\": [\n" +
                 "    {\n" +
-                "      data: [150, 230, 224, 218, 135, 147, 260],\n" +
-                "      type: 'line'\n" +
+                "      \"data\": [150, 230, 224, 218, 135, 147, 260],\n" +
+                "      \"type\": \"line\"\n" +
                 "    }\n" +
                 "  ]\n" +
-                "};\n" +
+                "}\n" +
                 "```\n" +
                 "1. 生成符合Echarts 能直接使用的图片代码\n" +
                 "2. 生成分析结论\n" +
-                "3. 不要回复给我其他任何无关的信息包括你的结束语。";
+                "3. 在json串前以及都添加```\n" +
+                "4. 不要回复给我其他任何无关的信息包括你的结束语。";
         // 用户prompt
         String userPrompt = "根据csv数据:%s，分析要求:%s,生成一个%s类型的图表,";
         String userPromptFormat = String.format(userPrompt, csv, chartType, goal);
@@ -203,7 +203,7 @@ public class ChartController {
         // 拆分代码， 和结果
         String[] split = string.split("```");
         // js 代码
-        String genChart = split[1].trim().replaceAll("js", "");
+        String genChart = split[1].trim();
         // 分析结果
         String genResult = split[2].trim();
 

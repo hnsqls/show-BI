@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { ProForm, ProFormText, ProFormSelect, ProFormUploadButton } from '@ant-design/pro-components';
-import { message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { createStyles } from 'antd-style';
 import { genChartByAiUsingPost } from '@/services/shuo-bi/chartController';
+import { UploadOutlined } from '@ant-design/icons';
+import {
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+  ProFormUploadButton,
+} from '@ant-design/pro-components';
+import { message } from 'antd';
+import { createStyles } from 'antd-style';
 import ReactECharts from 'echarts-for-react';
+import React, { useState } from 'react';
 
 // 使用 createStyles 定义样式
 const useStyles = createStyles(({ token }) => ({
@@ -46,27 +51,6 @@ const ChartForm: React.FC = () => {
   const { styles } = useStyles();
   const [chartData, setChartData] = useState<API.BaseResponseChart_ | undefined>(undefined); // 用于存储返回的 data
 
-  const options = {
-    grid: { top: 8, right: 8, bottom: 24, left: 36 },
-    xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    },
-    yAxis: {
-      type: 'value',
-    },
-    series: [
-      {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: 'line',
-        smooth: true,
-      },
-    ],
-    tooltip: {
-      trigger: 'axis',
-    },
-  };
-
   // 表单提交处理函数
   const handleSubmit = async (values: any) => {
     console.log('表单数据:', values);
@@ -92,6 +76,9 @@ const ChartForm: React.FC = () => {
         // 提取 data 部分并存储到状态中
         setChartData(response);
 
+        // 重点：打印 genChart 的内容
+  console.log('genChart 数据:', response.data?.genChart);
+
         // 在这里可以使用 response.data 进行进一步处理
         if (response.data) {
           console.log('提取的 data:', response.data);
@@ -105,6 +92,20 @@ const ChartForm: React.FC = () => {
     }
   };
 
+  // 将 genChart 字符串解析为 JSON 对象
+  let chartOption = null;
+  try {
+    if (chartData?.data?.genChart) {
+      const formattedString = chartData.data.genChart
+        .replace(/(\w+)\s*:/g, '"$1":') // 给 key 添加双引号
+        .replace(/'([^']+)'/g, '"$1"'); // 替换单引号为双引号
+  
+      chartOption = JSON.parse(formattedString);
+    }
+  } catch (error) {
+    console.error("解析 genChart 失败:", error);
+    message.error("图表数据解析失败，请检查返回格式！");
+  }
   return (
     <div className={styles.container}>
       {/* 表单部分 */}
@@ -163,8 +164,11 @@ const ChartForm: React.FC = () => {
         {/* AI 生成图表 */}
         <div className={styles.chartResult}>
           <h3>AI 生成图表</h3>
-          <ReactECharts option={options} />
-          <pre>{chartData?.data?.genChart}</pre>
+          {chartOption ? (
+            <ReactECharts option={chartOption} />
+          ) : (
+            <p>暂无图表数据</p>
+          )}
         </div>
 
         {/* AI 分析结果 */}
