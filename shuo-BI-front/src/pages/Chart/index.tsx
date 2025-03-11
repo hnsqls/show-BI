@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { createStyles } from 'antd-style';
 import { genChartByAiUsingPost } from '@/services/shuo-bi/chartController';
+import ReactECharts from 'echarts-for-react';
 
 // 使用 createStyles 定义样式
 const useStyles = createStyles(({ token }) => ({
@@ -45,6 +46,27 @@ const ChartForm: React.FC = () => {
   const { styles } = useStyles();
   const [chartData, setChartData] = useState<API.BaseResponseChart_ | undefined>(undefined); // 用于存储返回的 data
 
+  const options = {
+    grid: { top: 8, right: 8, bottom: 24, left: 36 },
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        smooth: true,
+      },
+    ],
+    tooltip: {
+      trigger: 'axis',
+    },
+  };
+
   // 表单提交处理函数
   const handleSubmit = async (values: any) => {
     console.log('表单数据:', values);
@@ -58,7 +80,6 @@ const ChartForm: React.FC = () => {
 
     // 获取文件
     const file = values.file && values.file.length > 0 ? values.file[0].originFileObj : undefined;
-
     try {
       // 调用接口
       const response = await genChartByAiUsingPost(params, {}, file);
@@ -137,12 +158,12 @@ const ChartForm: React.FC = () => {
           />
         </ProForm>
       </div>
-
       {/* 结果部分 */}
       <div className={styles.resultContainer}>
         {/* AI 生成图表 */}
         <div className={styles.chartResult}>
           <h3>AI 生成图表</h3>
+          <ReactECharts option={options} />
           <pre>{chartData?.data?.genChart}</pre>
         </div>
 
