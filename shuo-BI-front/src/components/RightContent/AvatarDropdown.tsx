@@ -14,10 +14,35 @@ export type GlobalHeaderRightProps = {
   children?: React.ReactNode;
 };
 
+// export const AvatarName = () => {
+//   const { initialState } = useModel('@@initialState');
+//   const { currentUser } = initialState || {};
+//   return <span className="anticon">{currentUser?.userAvatar}</span>;
+// };
+// 头像
 export const AvatarName = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
-  return <span className="anticon">{currentUser?.name}</span>;
+
+  // 默认头像的 URL 或图标
+  const defaultAvatar =
+    'https://ts1.tc.mm.bing.net/th/id/R-C.400cd4ee0327db4389c04be8b2713981?rik=rcE069d4BGlCzw&riu=http%3a%2f%2fwww.woaem.com%2fwp-content%2fuploads%2f2022%2f09%2f2022090504230052.jpg&ehk=rebizCc7t8RGJQ0oUeUgqrKDVzGmAYJQzfEHQi9BwcI%3d&risl=&pid=ImgRaw&r=0'; // 替换为你的默认头像 URL
+
+  // 如果用户没有头像，使用默认头像
+  const avatarUrl = currentUser?.userAvatar || defaultAvatar;
+
+  return (
+    <>
+       {currentUser?.userName} {/* 显示用户名称 */}
+      <span className="anticon">
+        <img
+          src={avatarUrl}
+          alt="User Avatar"
+          style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+        />
+      </span>
+    </>
+  );
 };
 
 const useStyles = createStyles(({ token }) => {
@@ -95,7 +120,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser || !currentUser.userName) {
     return loading;
   }
 
