@@ -10,6 +10,7 @@ export default [
   
   { name:'欢迎页面',path: '/welcome', icon: 'smile', component: './Welcome' },
   { name:'智能分析页面',path: '/addChart', icon: 'smile', component: './Chart' },
+  { name:'我的图表',path: '/myChart', icon: 'smile', component: './MyChart' },
   {
     path: '/admin',
     icon: 'crown',

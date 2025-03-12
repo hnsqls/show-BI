@@ -23,6 +23,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponsePageChart_ = {
+    code?: number;
+    data?: PageChart_;
+    message?: string;
+  };
+
   type BaseResponsePageUser_ = {
     code?: number;
     data?: PageUser_;
@@ -66,6 +72,11 @@ declare namespace API {
     chartName?: string;
     chartType?: string;
     goal?: string;
+  };
+
+  type ChartQueryRequest = {
+    current?: number;
+    pageSize?: number;
   };
 
   type ChartUpdateRequest = {
@@ -114,6 +125,19 @@ declare namespace API {
   type OrderItem = {
     asc?: boolean;
     column?: string;
+  };
+
+  type PageChart_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: Chart[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
   };
 
   type PageUser_ = {

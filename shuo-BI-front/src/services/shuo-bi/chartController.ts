@@ -88,6 +88,21 @@ export async function getChartByIdUsingGet(
   });
 }
 
+/** listChartByPage POST /api/chart/list/page */
+export async function listChartByPageUsingPost(
+  body: API.ChartQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageChart_>('/api/chart/list/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** updateChart POST /api/chart/update */
 export async function updateChartUsingPost(
   body: API.ChartUpdateRequest,
