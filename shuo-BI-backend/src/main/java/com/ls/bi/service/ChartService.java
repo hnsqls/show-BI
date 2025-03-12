@@ -1,5 +1,7 @@
 package com.ls.bi.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ls.bi.model.dto.chart.ChartQueryRequest;
 import com.ls.bi.model.entity.Chart;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +12,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ChartService extends IService<Chart> {
 
+    /**
+     *  分页查询图表信息
+     * @param chartQueryRequest
+     * @param userId
+     * @return
+     */
+    Page<Chart> listChartByPage(ChartQueryRequest chartQueryRequest, Long userId);
 }

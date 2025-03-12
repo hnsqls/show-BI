@@ -1,5 +1,6 @@
 package com.ls.bi.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ls.bi.common.BaseResponse;
 import com.ls.bi.common.DeleteRequest;
 import com.ls.bi.common.ErrorCode;
@@ -9,6 +10,7 @@ import com.ls.bi.exception.ThrowUtils;
 import com.ls.bi.manager.AiManager;
 import com.ls.bi.model.dto.chart.ChartAddRequest;
 import com.ls.bi.model.dto.chart.ChartGenRequest;
+import com.ls.bi.model.dto.chart.ChartQueryRequest;
 import com.ls.bi.model.dto.chart.ChartUpdateRequest;
 import com.ls.bi.model.entity.Chart;
 import com.ls.bi.model.entity.User;
@@ -130,22 +132,23 @@ public class ChartController {
 
 
     /**
-     * 分页获取图表列表（仅管理员）
+     * 分页获取图表列表
      *
      * @param chartQueryRequest
      * @param request
      * @return
      */
-//    @PostMapping("/list/page")
-//    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-//    public BaseResponse<Page<Chart>> listChartByPage(@RequestBody ChartQueryRequest chartQueryRequest,
-//                                                     HttpServletRequest request) {
-//        long current = chartQueryRequest.getCurrent();
-//        long size = chartQueryRequest.getPageSize();
-//        Page<Chart> chartPage = chartService.page(new Page<>(current, size),
-//                chartService.getQueryWrapper(chartQueryRequest));
-//        return ResultUtils.success(chartPage);
-//    }
+    @PostMapping("/list/page")
+    public BaseResponse<Page<Chart>> listChartByPage(@RequestBody ChartQueryRequest chartQueryRequest,
+                                                     HttpServletRequest request) {
+
+
+        //用户id
+        Long userId = userService.getLoginUser(request).getId();
+
+        Page<Chart> chartPage = chartService.listChartByPage(chartQueryRequest,userId);
+        return ResultUtils.success(chartPage);
+    }
 
 
     /**

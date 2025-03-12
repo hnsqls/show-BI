@@ -10,29 +10,18 @@ import java.io.Serializable;
  */
 @Data
 public class ChartQueryRequest implements Serializable {
-    /**
-     * id
-     */
-    private Long id;
-    /**
-     * 图表名称
-     */
-    private String chartName;
+
 
     /**
-     * 分析目标
+     * page
      */
-    private String goal;
+    private int current;
 
     /**
-     * 图表数据
+     * size
      */
-    private String chartData;
+    private int pageSize;
 
-    /**
-     * 图表类型
-     */
-    private String chartType;
 
 
     private static final long serialVersionUID = 1L;
