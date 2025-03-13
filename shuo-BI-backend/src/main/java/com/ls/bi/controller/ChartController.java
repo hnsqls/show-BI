@@ -169,6 +169,34 @@ public class ChartController {
         //校验
         ThrowUtils.throwIf(StringUtils.isAnyBlank(chartName, goal, chartType), ErrorCode.PARAMS_ERROR);
 
+        // todo :文件校验 大小,后缀
+        // 校验文件大小
+        long maxSize = 10 * 1024 * 1024; // 1MB
+        if (multipartFile.getSize() > maxSize) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "文件大小不能超过 10MB");
+        }
+
+        // 校验文件后缀名
+//        String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
+        String[] allowedExtensions = {"xlsx"};
+        String fileName = multipartFile.getOriginalFilename();
+        if (fileName == null || fileName.isEmpty()) {
+            throw new RuntimeException("文件名不能为空");
+        }
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        boolean isValidExtension = false;
+        for (String ext : allowedExtensions) {
+            if (ext.equals(fileExtension)) {
+                isValidExtension = true;
+                break;
+            }
+        }
+        if (!isValidExtension) {
+
+            throw new BusinessException(ErrorCode.PARAMS_ERROR.getCode(), "不支持的文件类型，仅支持: " + String.join(", ", allowedExtensions));
+        }
+
+
         Long userId = userService.getLoginUser(request).getId();
         //读取文件 excel ->csv
         String csv = ExcelUtils.excelToCsv(multipartFile);
