@@ -19,4 +19,13 @@ public interface ChartService extends IService<Chart> {
      * @return
      */
     Page<Chart> listChartByPage(ChartQueryRequest chartQueryRequest, Long userId);
+
+
+    /**
+     * 模糊查询 图表名称，图表类型，分析目标
+     * @param searchText
+     * @param userId
+     * @return
+     */
+    Page<Chart> searchText(String searchText,Long userId);
 }

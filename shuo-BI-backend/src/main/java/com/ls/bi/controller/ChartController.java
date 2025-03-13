@@ -229,4 +229,32 @@ public class ChartController {
         return ResultUtils.success(chart);
     }
 
+
+    /**
+     * 模糊查询 图表名称，图表类型，分析目标
+     * @param searchText
+     * @param request
+     * @return
+     */
+    @GetMapping("/searchTextPage")
+    public BaseResponse<Page<Chart>> searchTextPage(String searchText, HttpServletRequest request) {
+
+
+        User loginUser = userService.getLoginUser(request);
+        // 参数校验
+        ThrowUtils.throwIf(StringUtils.isBlank(searchText), ErrorCode.PARAMS_ERROR);
+
+        if (loginUser == null){
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        Long userId = loginUser.getId();
+
+
+
+        // 调用词条模糊查询
+        Page<Chart> result =  chartService.searchText(searchText,userId);
+        return ResultUtils.success(result);
+    }
+
+
 }

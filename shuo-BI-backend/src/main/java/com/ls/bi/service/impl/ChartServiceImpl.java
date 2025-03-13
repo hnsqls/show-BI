@@ -15,16 +15,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
-* @author 26611
-* @description 针对表【chart(图表信息表)】的数据库操作Service实现
-* @createDate 2025-03-06 14:56:00
-*/
+ * @author 26611
+ * @description 针对表【chart(图表信息表)】的数据库操作Service实现
+ * @createDate 2025-03-06 14:56:00
+ */
 @Service
 public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
-    implements ChartService{
+        implements ChartService {
 
     /**
      * 分页查询图表信息
+     *
      * @param chartQueryRequest
      * @param userId
      * @return
@@ -37,11 +38,11 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
 
         int current = chartQueryRequest.getCurrent();
         int pageSize = chartQueryRequest.getPageSize();
-        
+
         // 构造查询条件
         LambdaQueryWrapper<Chart> chartLambdaQueryWrapper = new LambdaQueryWrapper<>();
         chartLambdaQueryWrapper.eq(Chart::getUserId, userId);
-        
+
         // 构造分页
         Page<Chart> page = new Page<>(current, pageSize);
 
@@ -49,10 +50,48 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         page.addOrder(OrderItem.desc("updateTime"));
 
         //分页查询
-         page = this.page(page, chartLambdaQueryWrapper);
+        page = this.page(page, chartLambdaQueryWrapper);
 
-         // 获取分页结果
+        // 获取分页结果
 //        List<Chart> records = page.getRecords();
+
+        return page;
+    }
+
+    /**
+     * 模糊查询 图表名称，图表类型，分析目标
+     *
+     * @param searchText
+     * @param userId
+     * @return
+     */
+    @Override
+    public Page<Chart> searchText(String searchText, Long userId) {
+
+        //参数校验
+        ThrowUtils.throwIf(searchText == null, ErrorCode.PARAMS_ERROR);
+        ThrowUtils.throwIf(userId == null, ErrorCode.PARAMS_ERROR);
+        // 构造查询条件
+        LambdaQueryWrapper<Chart> chartLambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        // 构造精确查询条件
+        chartLambdaQueryWrapper.eq(Chart::getUserId, userId);
+
+
+        // 构造 模糊查询条件
+        chartLambdaQueryWrapper.like(Chart::getChartName, searchText)
+                .or().like(Chart::getChartType, searchText)
+                .or().like(Chart::getGoal, searchText);
+
+        // 构造分页
+        Page<Chart> page = new Page<>(1, 10);
+
+        // 分页排序
+        page.addOrder(OrderItem.desc("updateTime"));
+
+        //分页查询
+        page = this.page(page, chartLambdaQueryWrapper);
+
 
         return page;
     }
