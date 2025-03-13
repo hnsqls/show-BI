@@ -166,6 +166,11 @@ declare namespace API {
     total?: number;
   };
 
+  type searchTextPageUsingGETParams = {
+    /** searchText */
+    searchText?: string;
+  };
+
   type User = {
     createTime?: string;
     id?: number;

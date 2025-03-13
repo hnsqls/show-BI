@@ -1,22 +1,33 @@
-import { listChartByPageUsingPost } from '@/services/shuo-bi/chartController'; // 引入接口
-import { message, Pagination } from 'antd'; // 引入分页组件
+import { listChartByPageUsingPost, searchTextPageUsingGet } from '@/services/shuo-bi/chartController'; // 引入搜索接口
+import { Input, message, Pagination } from 'antd'; // 引入 Input 组件
 import { createStyles } from 'antd-style';
 import ReactECharts from 'echarts-for-react';
 import React, { useState, useEffect } from 'react';
 
-// 使用 createStyles 定义样式
 const useStyles = createStyles(({ token }) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '100vh', // 容器最小高度为视口高度
+    minHeight: '100vh',
+    position: 'relative', // 确保容器是相对定位
+  },
+  // 新增搜索框容器样式
+  searchContainer: {
+    position: 'fixed', // 固定定位，使搜索框始终固定在右上角
+    top: '16px', // 距离顶部 16px
+    right: '140px', // 距离右侧 24px
+    zIndex: 1000, // 确保搜索框在最上层，不会被其他元素覆盖
+  },
+  searchInput: {
+    width: '200px', // 搜索框宽度
   },
   resultContainer: {
-    flex: 1, // 内容区域占满剩余空间
+    flex: 1,
     padding: '24px',
-    display: 'grid', // 使用 Grid 布局
-    gridTemplateColumns: 'repeat(2, 1fr)', // 每行显示两个图表
-    gap: '16px', // 图表之间的间距
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '16px',
+    marginTop: '64px', // 为搜索框留出空间，避免内容被搜索框遮挡
   },
   chartResult: {
     backgroundColor: token.colorBgContainer,
@@ -42,6 +53,7 @@ const ChartForm: React.FC = () => {
   const [chartData, setChartData] = useState<API.BaseResponsePageChart_ | undefined>(undefined); // 存储分页数据
   const [currentPage, setCurrentPage] = useState(1); // 当前页码
   const [pageSize, setPageSize] = useState(10); // 每页条数
+  const [searchKey, setSearchKey] = useState<string>(''); // 搜索关键词状态
 
   // 加载分页数据
   const loadData = async (current: number, pageSize: number) => {
@@ -64,9 +76,40 @@ const ChartForm: React.FC = () => {
     }
   };
 
+  // 搜索数据
+  const handleSearch = async () => {
+    if (!searchKey.trim()) {
+      message.warning('请输入搜索关键词');
+      return;
+    }
+
+    try {
+      // 调用搜索接口
+      const response = await searchTextPageUsingGet({
+        searchText: searchKey, // 传入搜索关键词
+        current: currentPage, // 当前页码
+        size: pageSize, // 每页条数
+      });
+
+      // 处理响应
+      if (response.code === 0) {
+        setChartData(response); // 更新图表数据
+      } else {
+        message.error(`搜索失败：${response.message}`);
+      }
+    } catch (error) {
+      console.error('搜索请求出错:', error);
+      message.error('搜索失败，请重试！');
+    }
+  };
+
   // 初始化加载数据
   useEffect(() => {
-    loadData(currentPage, pageSize);
+    if (searchKey) {
+      handleSearch(); // 如果有搜索关键词，执行搜索
+    } else {
+      loadData(currentPage, pageSize); // 否则加载普通分页数据
+    }
   }, [currentPage, pageSize]);
 
   // 分页改变时的回调
@@ -116,6 +159,19 @@ const ChartForm: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      {/* 新增搜索框部分 */}
+      <div className={styles.searchContainer}>
+        <Input.Search
+          placeholder="请输入搜索关键词"
+          className={styles.searchInput}
+          enterButton
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
+          onSearch={handleSearch} // 点击搜索按钮时触发
+          allowClear
+        />
+      </div>
+
       {/* 结果部分 */}
       <div className={styles.resultContainer}>
         {renderChart()}

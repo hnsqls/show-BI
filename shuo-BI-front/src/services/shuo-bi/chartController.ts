@@ -103,6 +103,21 @@ export async function listChartByPageUsingPost(
   });
 }
 
+/** searchTextPage GET /api/chart/searchTextPage */
+export async function searchTextPageUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.searchTextPageUsingGETParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageChart_>('/api/chart/searchTextPage', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** updateChart POST /api/chart/update */
 export async function updateChartUsingPost(
   body: API.ChartUpdateRequest,
