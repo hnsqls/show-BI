@@ -11,30 +11,38 @@ const useStyles = createStyles(({ token }) => ({
     minHeight: '100vh',
     position: 'relative', // 确保容器是相对定位
   },
-  // 新增搜索框容器样式
+  // 搜索框容器样式
   searchContainer: {
     position: 'fixed', // 固定定位，使搜索框始终固定在右上角
     top: '16px', // 距离顶部 16px
-    right: '140px', // 距离右侧 24px
+    right: '140px', // 距离右侧 140px
     zIndex: 1000, // 确保搜索框在最上层，不会被其他元素覆盖
   },
   searchInput: {
     width: '200px', // 搜索框宽度
   },
+  // 结果部分样式
   resultContainer: {
     flex: 1,
     padding: '24px',
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '16px',
-    marginTop: '64px', // 为搜索框留出空间，避免内容被搜索框遮挡
+    gridTemplateColumns: 'repeat(2, 1fr)', // 每行显示 2 个图表
+    gap: '16px', // 图表之间的间距
+    marginTop: '5px', // 减少顶部间距，避免内容区域太靠下
+    paddingTop: '1px', // 调整顶部内边距
   },
+  // 单个图表容器样式
   chartResult: {
     backgroundColor: token.colorBgContainer,
     borderRadius: token.borderRadiusLG,
     boxShadow: token.boxShadow,
     padding: '16px',
+    height: '300px', // 固定图表容器高度
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center', // 内容垂直居中
   },
+  // 分页组件样式
   paginationContainer: {
     position: 'sticky', // 分页组件固定在底部
     bottom: 0, // 固定在底部
@@ -147,7 +155,7 @@ const ChartForm: React.FC = () => {
           {chartOption ? (
             <ReactECharts
               option={chartOption}
-              style={{ height: '300px', width: '100%' }} // 调整图表大小
+              style={{ height: '250px', width: '100%' }} // 调整图表大小
             />
           ) : (
             <p>暂无图表数据</p>
@@ -159,7 +167,7 @@ const ChartForm: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {/* 新增搜索框部分 */}
+      {/* 搜索框部分 */}
       <div className={styles.searchContainer}>
         <Input.Search
           placeholder="请输入搜索关键词"
