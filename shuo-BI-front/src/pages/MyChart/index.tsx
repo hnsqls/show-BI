@@ -151,7 +151,7 @@ const ChartForm: React.FC = () => {
 
       return (
         <div key={index} className={styles.chartResult}>
-          <h3>图表 {index + 1}</h3>
+          <h3>表{index + 1}:  {chart.chartName}</h3>
           {chartOption ? (
             <ReactECharts
               option={chartOption}
