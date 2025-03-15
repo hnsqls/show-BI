@@ -122,7 +122,17 @@
             <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
             <version>0.1.153</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.17.1</version>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <plugins>
