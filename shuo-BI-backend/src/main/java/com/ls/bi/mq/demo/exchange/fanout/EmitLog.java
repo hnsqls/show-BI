@@ -1,4 +1,4 @@
-package com.ls.bi.mq.demo.exchange;
+package com.ls.bi.mq.demo.exchange.fanout;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
