@@ -17,7 +17,7 @@ class AiManagerTest {
 
     @Test
     public void dochattest(){
-        String string = aiManager.doChat("","你是哪个模型","deepseek-v3-241226");
+        String string = aiManager.doChat("你是哪个模型");
         System.out.println("string = " + string);
 
     }

@@ -14,6 +14,7 @@ import com.ls.bi.model.dto.chart.ChartQueryRequest;
 import com.ls.bi.model.dto.chart.ChartUpdateRequest;
 import com.ls.bi.model.entity.Chart;
 import com.ls.bi.model.entity.User;
+import com.ls.bi.mq.bus.AIProducer;
 import com.ls.bi.service.ChartService;
 import com.ls.bi.service.UserService;
 import com.ls.bi.utils.ExcelUtils;
@@ -52,6 +53,9 @@ public class ChartController {
 
     @Resource
     private AiManager aiManager;
+
+    @Resource
+    private AIProducer aiProducer;
 
     // region 增删改查
 
@@ -285,4 +289,81 @@ public class ChartController {
     }
 
 
+    /**
+     * 智能分析
+     * @param multipartFile
+     * @param chartGenRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/genmq")
+    public BaseResponse<String> genChartMQByAi(@RequestPart("file") MultipartFile multipartFile,
+                                            ChartGenRequest chartGenRequest, HttpServletRequest request) {
+
+        String chartName = chartGenRequest.getChartName();
+        String goal = chartGenRequest.getGoal();
+        String chartType = chartGenRequest.getChartType();
+
+        //校验
+        ThrowUtils.throwIf(StringUtils.isAnyBlank(chartName, goal, chartType), ErrorCode.PARAMS_ERROR);
+
+        // todo :文件校验 大小,后缀
+        // 校验文件大小
+        long maxSize = 10 * 1024 * 1024; // 1MB
+        if (multipartFile.getSize() > maxSize) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "文件大小不能超过 10MB");
+        }
+
+        // 校验文件后缀名
+//        String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
+        String[] allowedExtensions = {"xlsx"};
+        String fileName = multipartFile.getOriginalFilename();
+        if (fileName == null || fileName.isEmpty()) {
+            throw new RuntimeException("文件名不能为空");
+        }
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        boolean isValidExtension = false;
+        for (String ext : allowedExtensions) {
+            if (ext.equals(fileExtension)) {
+                isValidExtension = true;
+                break;
+            }
+        }
+        if (!isValidExtension) {
+
+            throw new BusinessException(ErrorCode.PARAMS_ERROR.getCode(), "不支持的文件类型，仅支持: " + String.join(", ", allowedExtensions));
+        }
+
+
+        Long userId = userService.getLoginUser(request).getId();
+        //读取文件 excel ->csv
+        String csv = ExcelUtils.excelToCsv(multipartFile);
+
+        Chart chart = new Chart();
+
+
+        chart.setChartName(chartName);
+        chart.setGoal(goal);
+        chart.setChartData(csv);
+        chart.setChartType(chartType);
+        chart.setGenChart("");
+        chart.setGenResult("");
+        chart.setUserId(userId);
+        chartService.save(chart);
+
+        Long id = chart.getId();
+
+        try {
+            aiProducer.send(String.valueOf(id));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR,"AI 服务繁忙");
+        }
+//        String string = aiManager.doChat(systemPrompt, userPromptFormat);
+
+
+
+        //调用接口
+
+        return ResultUtils.success("AI 分析已提交,正在处理中");
+    }
 }
